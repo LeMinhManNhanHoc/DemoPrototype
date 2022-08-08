@@ -5,6 +5,7 @@ using DG.Tweening;
 using System.Linq;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class GameController : MonoBehaviour
 
     public GameObject settingPanel;
     public GameObject gameOverPanel;
+    public Slider volumeSlider;
     //public IGameState currentGameState;
 
     //GameSelectBallState selectState = new GameSelectBallState();
@@ -50,6 +52,8 @@ public class GameController : MonoBehaviour
         }
 
         highScore.text = PlayerPrefs.GetInt("highScore", 0).ToString();
+        audioSource.volume = PlayerPrefs.GetFloat("volume", 1f);
+        volumeSlider.value = PlayerPrefs.GetFloat("volume", 1f);
 
         StartCoroutine(StartNewGame());
     }
@@ -71,6 +75,11 @@ public class GameController : MonoBehaviour
     public void OnReturnToMainMenuClicked()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void OnResumeClick()
+    {
+        settingPanel.SetActive(false);
     }
 
     public void OnRetryClicked()
@@ -844,5 +853,11 @@ public class GameController : MonoBehaviour
             comboListEast.Add(gridArray[cell.index.x + 1, cell.index.y]);
             CheckEast(gridArray[cell.index.x + 1, cell.index.y]);
         }
+    }
+
+    public void OnVolumeChange()
+    {
+        audioSource.volume = volumeSlider.value;
+        PlayerPrefs.SetFloat("volume", volumeSlider.value);
     }
 }
