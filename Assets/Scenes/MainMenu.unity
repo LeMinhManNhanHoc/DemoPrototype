@@ -2702,9 +2702,9 @@ MonoBehaviour:
     - Each ball movement successful will be
     counted as one turn.
 
-    - At the start of each turn, <color=#00d960>3 new
-    balls<color=white> will be queued with random color and position. They will fully
-    appear at the end ofthat turn.
+    - At the start of each turn, <color=#00d960>3 new balls<color=white>
+    will be queued with random color and position. They will fully appear at the
+    end ofthat turn.
 
     - At the end of the turn, if there are <color=#00d960>5
     or more balls<color=white> with same color in a line (continuously in horizontal/vertical/diagonal),
@@ -2715,8 +2715,11 @@ MonoBehaviour:
 
     - Special balls:
 
-    + <color=#00d0d9>Ghost ball<color=white>:
-    can move through the other balls
+    + <color=#00dda8>Ghost ball<color=white>: can
+    move through the other balls
+
+    + <color=#0d9eba> Magic Ball<color=white>:
+    Change balls on it''s path to random type
 
     + <color=#d900d3>Wreck Ball<color=white>:
     destroy all balls in it''s path'
@@ -2746,7 +2749,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.35
+  m_fontSize: 39.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

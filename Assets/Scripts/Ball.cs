@@ -11,7 +11,7 @@ public enum BallType
     YELLOW,
     PURPLE,
     BROWN,
-    GHOST,
+    MAGIC,
     WRECK,
     MAX
 }
@@ -23,6 +23,7 @@ public class Ball : MonoBehaviour
     public Image myImage;
     public IBallState currentState;
     public Animation ballAnimation;
+    public GameObject ghostIcon;
 
     public List<Sprite> spriteList;
 
@@ -30,7 +31,8 @@ public class Ball : MonoBehaviour
     public BallAppearState appearState = new BallAppearState();
     public BallHighlightState hightlightState = new BallHighlightState();
     public BallDestoyState destroyState = new BallDestoyState();
-
+    public bool isGhost = false;
+    public float ghostPercent = 0.3f;
     // Start is called before the first frame update
     void Start()
     {
@@ -73,10 +75,20 @@ public class Ball : MonoBehaviour
         currentState.OnStateEnter(this);
     }
 
-    private void SetUpBall()
+    public void SetUpBall()
     {
         type = (BallType)Random.Range(0, (int)BallType.MAX);
         myImage.sprite = spriteList[(int)type];
+        if (type == BallType.WRECK || type == BallType.MAGIC)
+        {
+            isGhost = false;
+        }
+        else
+        {
+            isGhost = (Random.Range(0.0f, 1.0f) < ghostPercent);
+        }
+
+        ghostIcon.SetActive(isGhost);
     }
 
     public void ReadyBall()

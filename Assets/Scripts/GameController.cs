@@ -198,17 +198,25 @@ public class GameController : MonoBehaviour
             //Debug.LogError("1");
             if (cell.currentBall == null)
             {
-                if (currentSelectBall.type == BallType.GHOST)
+                //if (currentSelectBall.type == BallType.GHOST)
+                if(currentSelectBall.isGhost)
                 {
                     CheckValidMoveGhost(cell);
                 }
-                else if (currentSelectBall.type == BallType.WRECK)
-                {
-                    CheckValidMoveWreck(cell);
-                }
                 else
                 {
-                    CheckValidMove(cell);
+                    if (currentSelectBall.type == BallType.MAGIC)
+                    {
+                        CheckValidMoveMagic(cell);
+                    }
+                    else if (currentSelectBall.type == BallType.WRECK)
+                    {
+                        CheckValidMoveWreck(cell);
+                    }
+                    else
+                    {
+                        CheckValidMove(cell);
+                    }
                 }
 
                 currentSelectBall.SetState(currentSelectBall.appearState);
@@ -660,6 +668,26 @@ public class GameController : MonoBehaviour
         RandomNextBall();
     }
 
+    public void CheckValidMoveMagic(Cell cell)
+    {
+        CheckMagicMove(cell);
+
+        currentSelectBall.transform.position = cell.transform.position;
+        currentSelectBall.index = cell.index;
+        cell.currentBall = currentSelectBall;
+
+        currentSelectCell.currentBall = null;
+        currentSelectCell = null;
+
+        for (int i = ballQueue.Count; i > 0; i--)
+        {
+            Ball nextBall = ballQueue.Dequeue();
+            nextBall.SetState(nextBall.appearState);
+        }
+
+        RandomNextBall();
+    }
+
     private bool CheckWreckMove(Cell cell)
     {
         int moveX = Mathf.Abs(cell.index.x - currentSelectBall.index.x);
@@ -772,6 +800,118 @@ public class GameController : MonoBehaviour
                     {
                         gridArray[currentSelectBall.index.x, y].currentBall.SetState(gridArray[currentSelectBall.index.x, y].currentBall.destroyState);
                         gridArray[currentSelectBall.index.x, y].currentBall = null;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
+    private bool CheckMagicMove(Cell cell)
+    {
+        int moveX = Mathf.Abs(cell.index.x - currentSelectBall.index.x);
+        //int moveY = Mathf.Abs(currentSelectBall.index.y - cell.index.y);
+
+        //Check right
+        if (currentSelectBall.index.x < cell.index.x)
+        {
+            for (int x = currentSelectBall.index.x + 1; x < cell.index.x; x++)
+            //for (int x = cell.index.x; x > currentSelectBall.index.x; x--)
+            {
+                if (gridArray[x, currentSelectBall.index.y].currentBall != null)
+                {
+                    gridArray[x, currentSelectBall.index.y].currentBall.SetUpBall();
+                }
+            }
+
+            //Check down
+            if (currentSelectBall.index.y < cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y; y < cell.index.y; y++)
+                //for (int y = cell.index.y; y > currentSelectBall.index.y; y--)
+                {
+                    if (gridArray[currentSelectBall.index.x + moveX, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x + moveX, y].currentBall.SetUpBall();
+                    }
+                }
+            }
+            //Check up
+            else if (currentSelectBall.index.y > cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y; y > cell.index.y; y--)
+                //for (int y = cell.index.y; y < currentSelectBall.index.y; y++)
+                {
+                    if (gridArray[currentSelectBall.index.x + moveX, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x + moveX, y].currentBall.SetUpBall();
+                    }
+                }
+            }
+
+            return true;
+        }
+        //Check left
+        else if (currentSelectBall.index.x > cell.index.x)
+        {
+            for (int x = currentSelectBall.index.x - 1; x > cell.index.x; x--)
+            //for (int x = cell.index.x; x < moveX; x++)
+            {
+                if (gridArray[x, currentSelectBall.index.y].currentBall != null)
+                {
+                    gridArray[x, currentSelectBall.index.y].currentBall.SetUpBall();
+                }
+            }
+
+            //Check down
+            if (currentSelectBall.index.y < cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y; y < cell.index.y; y++)
+                //for (int y = cell.index.y; y > currentSelectBall.index.y; y--)
+                {
+                    if (gridArray[currentSelectBall.index.x - moveX, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x - moveX, y].currentBall.SetUpBall();
+                    }
+                }
+            }
+            //Check up
+            else if (currentSelectBall.index.y > cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y; y > cell.index.y; y--)
+                //for (int y = cell.index.y; y < currentSelectBall.index.y; y++)
+                {
+                    if (gridArray[currentSelectBall.index.x - moveX, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x - moveX, y].currentBall.SetUpBall();
+                    }
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            //Check down
+            if (currentSelectBall.index.y < cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y + 1; y < cell.index.y; y++)
+                {
+                    if (gridArray[currentSelectBall.index.x, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x, y].currentBall.SetUpBall();
+                    }
+                }
+            }
+            //Check up
+            else if (currentSelectBall.index.y > cell.index.y)
+            {
+                for (int y = currentSelectBall.index.y - 1; y > cell.index.y; y--)
+                {
+                    if (gridArray[currentSelectBall.index.x, y].currentBall != null)
+                    {
+                        gridArray[currentSelectBall.index.x, y].currentBall.SetUpBall();
                     }
                 }
             }
